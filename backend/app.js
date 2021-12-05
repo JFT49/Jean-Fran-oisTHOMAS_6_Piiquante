@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
+const helmet = require("helmet");    //HELMET : xssFilter, noSniff, ...
 
 const stuffRoutes = require('./routes/stuff');
 const userRoutes = require('./routes/user');
@@ -14,6 +15,7 @@ mongoose.connect('mongodb+srv://Toto:0@cluster0.ipn9j.mongodb.net/test?retryWrit
 
 const app = express();
 
+app.use(helmet());
 app.use(cors());
 
 app.use((req, res, next) => {
