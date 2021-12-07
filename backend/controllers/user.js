@@ -15,18 +15,18 @@ const User = require('../models/User');
 const Err = require('../models/Errors');   // Plugin Mongoose-errors
 
 exports.signup = (req, res, next) => {
-    bcrypt.hash(req.body.password, 10)
+    bcrypt.hash(req.body.password, 10)      //Hashage du password avec BCRYPT
         .then(hash => {
             const user = new User({
                 email: req.body.email,
                 password: hash
             });
-            if (Validation.validate(req.body.password)) {
+            if (Validation.validate(req.body.password)) {    //retourne TRUE si respecte les critéres de Validation
             user.save()
                 .then(() => res.status(201).json({ message: 'Utilisateur créé !'}))
                 .catch(error => res.status(400).json({ error }));
             }else{
-                var Reponse = Validation.validate(req.body.password, { details: true } );
+                var Reponse = Validation.validate(req.body.password, { details: true } );  //retourne les details des critéres de Validation non respecté
                 var iteration = Reponse.length;
                 var Message = "";
                 for ( let i = 0; i < iteration ; i++){
