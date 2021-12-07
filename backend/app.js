@@ -3,11 +3,12 @@ const express = require('express');
 const path = require('path');
 const cors = require('cors');
 const helmet = require("helmet");    //HELMET : xssFilter, noSniff, ...
+require('dotenv').config();         //DOTENV : pour le gestion des variables d'environneemnts
 
 const stuffRoutes = require('./routes/stuff');
 const userRoutes = require('./routes/user');
 
-mongoose.connect('mongodb+srv://Toto:0@cluster0.ipn9j.mongodb.net/test?retryWrites=true&w=majority',
+mongoose.connect( process.env.MONGOOSE_CONNECT_ENV ,    //Variable d'environnement définit dans le .env de DOTENV (.env à mettre dans gitignore)
   { useNewUrlParser: true,
     useUnifiedTopology: true })
   .then(() => console.log('Connexion à MongoDB réussie !'))
@@ -15,7 +16,7 @@ mongoose.connect('mongodb+srv://Toto:0@cluster0.ipn9j.mongodb.net/test?retryWrit
 
 const app = express();
 
-app.use(helmet()); 
+app.use(helmet());   //HELMET
 app.use(cors());
 
 app.use((req, res, next) => {
