@@ -1,5 +1,5 @@
 const Sauce = require('../models/Sauce');
-const fs = require('fs');
+const fs = require('fs');   //FS : file system
 
 exports.getAllSauces = (req, res, next) => {
   Sauce.find()
@@ -17,24 +17,24 @@ exports.createSauce = (req, res, next) => {
     const sauceObject = JSON.parse(req.body.sauce);
     delete sauceObject._id;
     const sauce = new Sauce({
-      ...sauceObject,
-      imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
+      ...sauceObject,                     //L'opérateur spread ... est utilisé pour faire une copie de tous les éléments de req.body
+      imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,   //résolution de l'URL complète de l'image
       likes: 0,
       dislikes: 0,
       usersLiked: [],
       usersDisliked: []
     });
-    sauce.save()
+    sauce.save()   //enregistre la sauce dans la base de donnée
       .then(() => res.status(201).json({ message: 'Sauce enregistrée !'}))
       .catch(error => res.status(400).json({ error }));
 };
 
 exports.modifySauce = (req, res, next) => {
-  const sauceObject = req.file ?
+  const sauceObject = req.file ?          //verifie si un fichier (image) est présent
     {
       ...JSON.parse(req.body.sauce),
       imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
-    } : { ...req.body };
+    } : { ...req.body };        // req tratée tel quel si pas de fichier image
   Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
     .then(() => res.status(200).json({ message: 'Sauce modifiée !'}))
     .catch(error => res.status(400).json({ error }));
@@ -43,9 +43,18 @@ exports.modifySauce = (req, res, next) => {
 exports.deleteSauce = (req, res, next) => {
   Sauce.findOne({ _id: req.params.id })
     .then(sauce => {
-      const filename = sauce.imageUrl.split('/images/')[1];
-      fs.unlink(`images/${filename}`, () => {
-        Sauce.deleteOne({ _id: req.params.id })
+
+///////////////////////
+      if (sauce.userId !== req.auth.userId) {    //verifie que la demande de suppression vient du createur de la sauce
+        res.status(400).json({
+          error: new Error('Unauthorized request!')
+        });
+      }
+////////////////
+
+      const filename = sauce.imageUrl.split('/images/')[1];  //recupere le nom du fichier image a supprimer
+      fs.unlink(`images/${filename}`, () => {     //supprime le fichier image
+        Sauce.deleteOne({ _id: req.params.id })   //supprime l'objet sauce
           .then(() => res.status(200).json({ message: 'Sauce supprimée !'}))
           .catch(error => res.status(400).json({ error }));
       });

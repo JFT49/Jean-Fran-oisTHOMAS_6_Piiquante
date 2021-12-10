@@ -1,8 +1,8 @@
 const { Console } = require('console');
-const http = require('http');
-const app = require('./app');
+const http = require('http');             //package HTTP natif de Node
+const app = require('./app');             //fichier de l'application Express
 
-const normalizePort = val => {
+const normalizePort = val => {            //renvoie un port valide, qu'il soit fourni sous la forme d'un numéro ou d'une chaîne
   const port = parseInt(val, 10);
 
   if (isNaN(port)) {
@@ -17,7 +17,7 @@ const normalizePort = val => {
 const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
-const errorHandler = error => {
+const errorHandler = error => {        //recherche les différentes erreurs et les gère de manière appropriée. Elle est ensuite enregistrée dans le serveur
   if (error.syscall !== 'listen') {
     throw error;
   }
@@ -37,7 +37,7 @@ const errorHandler = error => {
   }
 };
 
-const server = http.createServer(app);
+const server = http.createServer(app);     //Démarrage du server
 
 server.on('error', errorHandler);
 server.on('listening', () => {

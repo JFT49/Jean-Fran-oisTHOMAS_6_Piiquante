@@ -1,5 +1,6 @@
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');        //BCRYPT : package de chiffrement (hash)
+const jwt = require('jsonwebtoken');     //JSONWEBTOKEN : gestion token d'identification
+require('dotenv').config();         //DOTENV : pour le gestion des variables d'environneemnts
 
 const passwordValidator = require('password-validator');  // Plugin password-validator
 var Validation = new passwordValidator();
@@ -53,7 +54,7 @@ exports.login = (req, res, next) => {
                     userId: user._id,
                     token: jwt.sign(
                         { userId: user._id },
-                        'RANDOM_TOKEN_SECRET',
+                        process.env.TOKEN_VERIFY,      //Variable d'environnement définit dans le .env de DOTENV (.env à mettre dans gitignore)
                         { expiresIn: '24h' }
                     )
                 });

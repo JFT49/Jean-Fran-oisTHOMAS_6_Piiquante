@@ -1,4 +1,4 @@
-const multer = require('multer');
+const multer = require('multer');   //MULTER : package qui nous permet de gérer les fichiers entrants dans les requêtes HTTP
 
 const MIME_TYPES = {
     'image/jpg': 'jpg',
@@ -17,4 +17,4 @@ const storage = multer.diskStorage({
     }
 });
 
-module.exports = multer({ storage }).single('image');
+module.exports = multer({ storage }).single('image');  //gére uniquement les fichiers image
