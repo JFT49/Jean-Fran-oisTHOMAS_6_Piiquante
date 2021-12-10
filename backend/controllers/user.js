@@ -13,7 +13,6 @@ Validation
 .has().not().spaces();                           // Should not have spaces
 
 const User = require('../models/User');
-const Err = require('../models/Errors');   // Plugin Mongoose-errors
 
 exports.signup = (req, res, next) => {
     bcrypt.hash(req.body.password, 10)      //Hashage du password avec BCRYPT
