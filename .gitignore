@@ -2,3 +2,5 @@ backend/node_modules
 backend/images/*
 backend/.env
 frontend/node_modules
+package-lock.json
+node_modules
